@@ -51,6 +51,39 @@ public class Facebook_Account
         get; set;
     }
 
+    public string token1
+    {
+        get; set;
+    }
+    public string token2
+    {
+        get; set;
+    }
+
+
+    //Infomation
+    public string name
+    {
+        get; set;
+    }
+    public string uid
+    {
+        get; set;
+    }
+    public string email
+    {
+        get; set;
+    }
+    public string birthday
+    {
+        get; set;
+    }
+
+    public string locale
+    {
+        get; set;
+    }
+
     public Facebook_Account(string[] rawDatas)
     {
         status_account = Facebook_AccountStatus.Default;
