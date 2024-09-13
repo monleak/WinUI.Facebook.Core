@@ -131,6 +131,11 @@ public class Facebook_LoginService: IFacebook_LoginService
 
     public async Task<(string, string)> GetNormalTokenAccessAsync(Facebook_Account account)
     {
+        if (string.IsNullOrEmpty(account.cookies))
+        {
+            return (string.Empty, string.Empty);
+        }
+
         var token1 = await GetTokenAccess1Async(account);
         if(string.IsNullOrEmpty(token1))
         {
