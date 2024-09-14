@@ -20,7 +20,7 @@ public class Facebook_LoginService: IFacebook_LoginService
                 var request = new HttpRequestMessage(HttpMethod.Get, "https://business.facebook.com/content_management");
                 request.Headers.Add("accept", "*/*");
                 request.Headers.Add("accept-language", "en-US,en;q=0.9");
-                request.Headers.Add("cookie", account.cookies);
+                request.Headers.Add("cookie", account.Cookies);
                 request.Headers.Add("priority", "u=1, i");
                 request.Headers.Add("sec-ch-ua", "\"Google Chrome\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\"");
                 request.Headers.Add("sec-ch-ua-mobile", "?0");
@@ -51,7 +51,7 @@ public class Facebook_LoginService: IFacebook_LoginService
                 var request = new HttpRequestMessage(HttpMethod.Get, "https://adsmanager.facebook.com/adsmanager/manage/campaigns");
                 request.Headers.Add("accept", "*/*");
                 request.Headers.Add("accept-language", "en-US,en;q=0.9");
-                request.Headers.Add("cookie", account.cookies);
+                request.Headers.Add("cookie", account.Cookies);
                 request.Headers.Add("priority", "u=1, i");
                 request.Headers.Add("sec-ch-ua", "\"Google Chrome\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\"");
                 request.Headers.Add("sec-ch-ua-mobile", "?0");
@@ -69,7 +69,7 @@ public class Facebook_LoginService: IFacebook_LoginService
                 var request2 = new HttpRequestMessage(HttpMethod.Get, linkRedirect);
                 request2.Headers.Add("accept", "*/*");
                 request2.Headers.Add("accept-language", "en-US,en;q=0.9");
-                request2.Headers.Add("cookie", account.cookies);
+                request2.Headers.Add("cookie", account.Cookies);
                 request2.Headers.Add("priority", "u=1, i");
                 request2.Headers.Add("sec-ch-ua", "\"Google Chrome\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\"");
                 request2.Headers.Add("sec-ch-ua-mobile", "?0");
@@ -93,7 +93,7 @@ public class Facebook_LoginService: IFacebook_LoginService
 
     public async Task GetInfomationAccountAsync(Facebook_Account account)
     {
-        if (string.IsNullOrEmpty(account.token1) || string.IsNullOrEmpty(account.cookies))
+        if (string.IsNullOrEmpty(account.Token1) || string.IsNullOrEmpty(account.Cookies))
         {
             return;
         }
@@ -102,10 +102,10 @@ public class Facebook_LoginService: IFacebook_LoginService
         {
             using (var client = new HttpClient())
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, $"https://graph.facebook.com/me?access_token={account.token1}");
+                var request = new HttpRequestMessage(HttpMethod.Get, $"https://graph.facebook.com/me?access_token={account.Token1}");
                 request.Headers.Add("accept", "*/*");
                 request.Headers.Add("accept-language", "en-US,en;q=0.9");
-                request.Headers.Add("cookie", account.cookies);
+                request.Headers.Add("cookie", account.Cookies);
                 request.Headers.Add("priority", "u=1, i");
                 request.Headers.Add("sec-ch-ua", "\"Google Chrome\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\"");
                 request.Headers.Add("sec-ch-ua-mobile", "?0");
@@ -119,11 +119,11 @@ public class Facebook_LoginService: IFacebook_LoginService
                 var content = await response.Content.ReadAsStringAsync();
                 JsonObject json = JsonNode.Parse(content) as JsonObject;
 
-                account.name = json["name"]?.GetValue<string>() ?? "";
-                account.uid = json["id"]?.GetValue<string>() ?? "";
-                account.email = json["email"]?.GetValue<string>() ?? "";
-                account.birthday = json["birthday"]?.GetValue<string>() ?? "";
-                account.locale = json["locale"]?.GetValue<string>() ?? "";
+                account.Name = json["name"]?.GetValue<string>() ?? "N/A";
+                account.Uid = json["id"]?.GetValue<string>() ?? "N/A";
+                account.Email = json["email"]?.GetValue<string>() ?? "N/A";
+                account.Birthday = json["birthday"]?.GetValue<string>() ?? "N/A";
+                account.Locale = json["locale"]?.GetValue<string>() ?? "N/A";
             }
         }
         catch{}
@@ -131,17 +131,24 @@ public class Facebook_LoginService: IFacebook_LoginService
 
     public async Task<(string, string)> GetNormalTokenAccessAsync(Facebook_Account account)
     {
-        if (string.IsNullOrEmpty(account.cookies))
+        if (string.IsNullOrEmpty(account.Cookies))
         {
+            account.Status_cookie = Facebook_CookieStatus.Die;
             return (string.Empty, string.Empty);
         }
 
         var token1 = await GetTokenAccess1Async(account);
         if(string.IsNullOrEmpty(token1))
         {
+            account.Status_cookie = Facebook_CookieStatus.Die;
             return (string.Empty, string.Empty);
         }
         var token2 = await GetTokenAccess2Async(account);
+
+        account.Token1 = token1;
+        account.Token2 = token2;
+        account.Status_cookie = Facebook_CookieStatus.Live;
+
         return (token1, token2);
     }
 }

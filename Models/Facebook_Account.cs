@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using CommunityToolkit.Mvvm.ComponentModel;
 namespace WinUI.Facebook.Core.Models;
 
 public enum Facebook_AccountStatus
@@ -21,68 +22,47 @@ public enum Facebook_CookieStatus
     Default
 }
 
-public class Facebook_Account
+public partial class Facebook_Account : ObservableRecipient
 {
-    public string username
-    {
-        get; set;
-    }
-    public string password
-    {
-        get; set;
-    }
+    [ObservableProperty]
+    private string username;
 
-    public string twoFA
-    {
-        get; set;
-    }
+    [ObservableProperty]
+    private string password;
 
-    public string cookies
-    {
-        get; set;
-    }
+    [ObservableProperty]
+    private string twoFA;
 
-    public Facebook_AccountStatus status_account
-    {
-        get; set;
-    }
-    public Facebook_CookieStatus status_cookie
-    {
-        get; set;
-    }
+    [ObservableProperty]
+    private string cookies;
 
-    public string token1
-    {
-        get; set;
-    }
-    public string token2
-    {
-        get; set;
-    }
+    [ObservableProperty]
+    private Facebook_AccountStatus status_account;
 
+    [ObservableProperty]
+    private Facebook_CookieStatus status_cookie;
+
+    [ObservableProperty]
+    private string token1;
+
+    [ObservableProperty]
+    private string token2;
 
     //Infomation
-    public string name
-    {
-        get; set;
-    }
-    public string uid
-    {
-        get; set;
-    }
-    public string email
-    {
-        get; set;
-    }
-    public string birthday
-    {
-        get; set;
-    }
+    [ObservableProperty]
+    private string name = "N/A";
 
-    public string locale
-    {
-        get; set;
-    }
+    [ObservableProperty]
+    private string uid = "N/A";
+
+    [ObservableProperty]
+    public string email = "N/A";
+
+    [ObservableProperty]
+    private string birthday = "N/A";
+
+    [ObservableProperty]
+    private string locale = "N/A";
 
     public Facebook_Account(string[] rawDatas)
     {
@@ -90,16 +70,16 @@ public class Facebook_Account
         status_cookie = Facebook_CookieStatus.Default;
         username = rawDatas[0];
         password = rawDatas[1];
-        if(rawDatas.Length > 2)
+        for (int i = 0; i < rawDatas.Length; i++)
         {
-            for (int i = 2; i < rawDatas.Length; i++)
+            if (rawDatas[i].Contains("c_user"))
             {
-                if (rawDatas[i].Contains("c_user"))
-                {
-                    cookies = rawDatas[i];
-                    break;
-                }
+                cookies = rawDatas[i];
+                break;
             }
+        }
+        if (rawDatas.Length > 2)
+        {
             if (!rawDatas[2].Contains("c_user"))
             {
                 twoFA = rawDatas[2];
