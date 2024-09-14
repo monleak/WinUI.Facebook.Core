@@ -86,4 +86,13 @@ public partial class Facebook_Account : ObservableRecipient
             }
         }
     }
+
+    public override bool Equals(object obj)
+    {
+        if (obj is Facebook_Account otherPerson)
+        {
+            return Username == otherPerson.Username;
+        }
+        return false;
+    }
 }

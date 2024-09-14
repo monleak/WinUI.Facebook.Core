@@ -148,6 +148,7 @@ public class Facebook_LoginService: IFacebook_LoginService
         account.Token1 = token1;
         account.Token2 = token2;
         account.Status_cookie = Facebook_CookieStatus.Live;
+        account.Status_account = Facebook_AccountStatus.Live;
 
         return (token1, token2);
     }
