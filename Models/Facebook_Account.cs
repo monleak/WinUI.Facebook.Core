@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 namespace WinUI.Facebook.Core.Models;
@@ -81,7 +82,7 @@ public partial class Facebook_Account : ObservableRecipient
         }
         if (rawDatas.Length > 2)
         {
-            if (!rawDatas[2].Contains("c_user"))
+            if (Regex.IsMatch(rawDatas[2], @"^[a-zA-Z0-9]*$"))
             {
                 twoFA = rawDatas[2];
             }
