@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 namespace WinUI.Facebook.Core.Models;
@@ -87,6 +88,16 @@ public partial class Facebook_Account : ObservableRecipient
         }
     }
 
+    public Facebook_Account(JsonObject json)
+    {
+        status_account = Facebook_AccountStatus.Default;
+        status_cookie = Facebook_CookieStatus.Default;
+        username = (string)json["username"];
+        password = (string)json["password"];
+        cookies = (string)json["cookies"];
+        twoFA = (string)json["twoFA"];
+    }
+
     public override bool Equals(object obj)
     {
         if (obj is Facebook_Account otherPerson)
@@ -94,5 +105,15 @@ public partial class Facebook_Account : ObservableRecipient
             return Username == otherPerson.Username;
         }
         return false;
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            int hash = 17;
+            hash = hash * 23 + Username.GetHashCode();
+            return hash;
+        }
     }
 }
