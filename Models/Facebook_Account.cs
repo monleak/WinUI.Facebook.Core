@@ -82,7 +82,7 @@ public partial class Facebook_Account : ObservableRecipient
         }
         if (rawDatas.Length > 2)
         {
-            if (Regex.IsMatch(rawDatas[2], @"^[a-zA-Z0-9]*$"))
+            if (Regex.IsMatch(rawDatas[2], @"^[a-zA-Z0-9]*$") && rawDatas[2].Length <= 32)
             {
                 twoFA = rawDatas[2];
             }
